@@ -1,0 +1,96 @@
+@mixin dapp-border-radius {
+    border-top-left-radius: 20%;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 20%;
+    border-bottom-left-radius: 1px;
+}
+
+.main-content{
+    min-height: 500px;
+    display: grid;
+    align-items: center;
+
+    .minting-box{
+        // height: 350px;
+        padding: 20px 0;
+        border: 2px solid #fff;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+}
+
+.dapp_btn{
+    width: fit-content;
+    font-size: calc(10px + 1vmin);
+    cursor: pointer;
+    padding: 10px 12px;
+    color: #000;
+    outline: none;
+    border: 1px solid #f7921b;
+    // border-radius: 6px;
+   @include dapp-border-radius();
+    background-color: #fff;
+  }
+
+  .mint-btn{
+    width: fit-content;
+    font-size: calc(10px + 1vmin);
+    cursor: pointer;
+    padding: 10px 12px;
+    color: #000;
+    outline: none;
+    border: 1px solid #f7921b;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+// connect wallet
+.css-1bnwz7w {
+    min-width: 180px !important;
+    width: auto !important;
+    
+    position: relative;
+    // border-radius: 5px;
+    padding: 0.75em 1.25em;
+    padding-right: 0.75em;
+    padding-left: 1.25em;
+    font-size: 1em;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    gap: 0.5em;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: space-evenly;
+    -ms-flex-pack: space-evenly;
+    -webkit-justify-content: space-evenly;
+    justify-content: space-evenly;
+    color: #000 !important;
+    border: 1px solid #f7921b !important;
+    background: #fff !important;
+    // @include dapp-border-radius();
+    &:hover {
+      background-color: #fff !important;
+    }
+    svg {
+      display: none !important;
+    }
+  }
+  
+  .css-55ygxk {
+    min-width: 160px !important;
+    // border-radius: 5px !important;
+    font-weight: 500 !important;
+    color: #ff8012 !important;
+    border: 1px solid #ff8012 !important;
+    background: #000;
+  }
+  
