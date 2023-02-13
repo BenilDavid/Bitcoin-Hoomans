@@ -15,15 +15,20 @@
 }
 
 .tab-content-container {
+    min-height: 320px;
     font-size: calc(14px + 1vmin);
   // border: 1px solid #fff;
   display: flex;
   align-items: center;
   color: #f7931a;
+  .tab-content{
+    font-size: calc(14px + 1vmin);
+
+  }
 }
 
 .tab-image {
-  margin: 10px 0;
+  margin: 10px 10px;
   cursor: pointer;
   width: 60px;
   height: 60px;

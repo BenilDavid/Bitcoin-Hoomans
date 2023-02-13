@@ -11,7 +11,7 @@
     align-items: center;
 
     .minting-box{
-        // height: 350px;
+        min-height: 400px;
         padding: 20px 0;
         border: 2px solid #fff;
         border-radius: 10px;
@@ -91,6 +91,34 @@
     font-weight: 500 !important;
     color: #ff8012 !important;
     border: 1px solid #ff8012 !important;
-    background: #000;
+    background: #fff !important;
   }
   
+  .carousel-tweet-image{
+    width: 350px;
+    height: 180px;
+  }
+
+
+  .news-ticker {
+    width: 100%;
+    // overflow: hidden;
+  }
+  
+  .news-ticker ul {
+    display: flex;
+    list-style: none;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+    animation: ticker 30s linear infinite;
+  }
+  
+  .news-ticker li {
+    padding: 0 10px;
+  }
+  
+  @keyframes ticker {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }

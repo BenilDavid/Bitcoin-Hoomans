@@ -4,6 +4,7 @@ import etherscansLogo from '../../../Assets/Images/etherscans-logo.png';
 import openseasLogo from '../../../Assets/Images/opensea-logo.png';
 import bitcoinLogo from '../../../Assets/Images/bitcoin-logo.png';
 import twitterLogo from '../../../Assets/Images/twitter.png';
+import discordLogo from '../../../Assets/Images/discord.png';
 
 const Header = () => {
   return (
@@ -13,13 +14,16 @@ const Header = () => {
             <div className='hoomans'>HOOMANS</div>
         </div>
         <div className='icon-links'>
-            <a className='mx-1' href='https://twitter.com/btchoomans'>
+            <a target='_blank' className='mx-1' href='https://discord.gg/huFqqH7UF9' rel="noreferrer">
+            <img src={discordLogo} alt="discord logo" />
+            </a>  
+            <a target='_blank' className='mx-1' href='https://twitter.com/btchoomans' rel="noreferrer">
             <img src={twitterLogo} alt="twitter logo" />
             </a>
-            <a className='mx-1' href='https://opensea.io/collection/bitcoinhoomansnft'>
+            <a target='_blank' className='mx-1' href='https://opensea.io/collection/bitcoinhoomansnft' rel="noreferrer">
                 <img src={openseasLogo} alt="opensea logo" />
             </a>
-            <a className='mx-1' href='https://etherscan.io/address/0xe36034fae6e90518cc7382bb43b10e7d472b029c'>
+            <a target='_blank' className='mx-1' href='https://etherscan.io/address/0xe36034fae6e90518cc7382bb43b10e7d472b029c' rel="noreferrer">
                 <img src={etherscansLogo} alt="etherscans logo" />
             </a>
         </div>
