@@ -23,7 +23,7 @@ const Header = () => {
             <a target='_blank' className='mx-1' href='https://opensea.io/collection/bitcoinhoomansnft' rel="noreferrer">
                 <img src={openseasLogo} alt="opensea logo" />
             </a>
-            <a target='_blank' className='mx-1' href='https://etherscan.io/address/0xe36034fae6e90518cc7382bb43b10e7d472b029c' rel="noreferrer">
+            <a target='_blank' className='mx-1' href='https://etherscan.io/address/0xd2a2e0da2a63ee0069ff78c88dd5c8da97805d7b' rel="noreferrer">
                 <img src={etherscansLogo} alt="etherscans logo" />
             </a>
         </div>

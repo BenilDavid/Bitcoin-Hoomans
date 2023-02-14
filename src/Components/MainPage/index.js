@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 // import img9 from '../../Assets/Images/TweetImages/9.jpeg';
 // import img10 from '../../Assets/Images/TweetImages/10.jpeg';
 
-const contractAddress = "0xE36034fAE6E90518cc7382BB43b10E7d472b029c";
+const contractAddress = "0xd2A2E0Da2A63ee0069fF78C88DD5C8dA97805D7B";
 
 const MainPage = () => {
     const address = useAddress();
@@ -32,7 +32,7 @@ const MainPage = () => {
         PUBLIC_MINT_LIMIT: "",
         PUBLIC_MINT_LIMIT_TXN: "",
         totalMinted: "",
-        freeMax: null,
+        paused: null,
     })
 
     useEffect(() => {
@@ -51,7 +51,6 @@ const MainPage = () => {
             contractABI,
             signer
         );
-        console.log(nftContract);
 
         try {
             if (window.ethereum) {
@@ -61,12 +60,13 @@ const MainPage = () => {
                 let PUBLIC_MINT_LIMIT = await nftContract.PUBLIC_MINT_LIMIT();
                 let PUBLIC_MINT_LIMIT_TXN = await nftContract.PUBLIC_MINT_LIMIT_TXN();
                 let totalMinted = await nftContract.totalSupply();
-
+                let paused = await nftContract.paused();
+                // console.log("public sale", publicSale);
                 // const progressValue = (totalMinted / MAX_SUPPLY) * 100;
                 // setProgress(progressValue);
 
                 setContractDetails((prev) => {
-                    return { ...prev, "MAX_SUPPLY": MAX_SUPPLY.toString(), "publicPrice": price.toString(), "PUBLIC_MINT_LIMIT": PUBLIC_MINT_LIMIT.toString(), "totalMinted": totalMinted.toString(), "PUBLIC_MINT_LIMIT_TXN": PUBLIC_MINT_LIMIT_TXN.toString() }
+                    return { ...prev, "MAX_SUPPLY": MAX_SUPPLY.toString(), "publicPrice": price.toString(), "PUBLIC_MINT_LIMIT": PUBLIC_MINT_LIMIT.toString(), "totalMinted": totalMinted.toString(), "PUBLIC_MINT_LIMIT_TXN": PUBLIC_MINT_LIMIT_TXN.toString(), "paused": paused }
                 });
             }
         } catch (error) {
@@ -74,38 +74,49 @@ const MainPage = () => {
         }
     }
 
-    //public Mint
-    const publicMinting = async () => {
-
-        if (window.ethereum) {
-            const nftContract = new ethers.Contract(
-                contractAddress,
-                contractABI,
-                signer
-            );
-            try {
-
-                await nftContract.publicMint(
-                    ethers.BigNumber.from(tokenCount), {
-                    value: ethers.utils.parseEther((contractDetails.publicPrice * tokenCount).toString()),
-                });
-
-            } catch (error) {
-                toast.error("User rejected transaction", {
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    className: 'foo-bar',
-                    theme: "dark"
-                })
-                console.log(error);
-            }
-        } else {
-            toast.error("wallet not connected", {
+    //free Mint
+    const freeMinting = async () => {
+        const nftContract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+        );
+        try {
+            await nftContract.freeMint(ethers.BigNumber.from(1));
+        } catch (error) {
+            const temp = JSON.parse(JSON.stringify(error));
+// console.log(temp.error.message);
+            toast.error(temp.error.message, {
                 position: toast.POSITION.BOTTOM_RIGHT,
                 className: 'foo-bar',
                 theme: "dark"
             })
         }
-    };
+    }
+
+    //public Mint
+    const publicMinting = async () => {
+        const nftContract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+        );
+        try {
+            await nftContract.publicMint(
+                ethers.BigNumber.from(tokenCount), {
+                value: ethers.utils.parseEther((contractDetails.publicPrice * tokenCount).toString()),
+            });
+        } catch (error) {
+            const temp = JSON.parse(JSON.stringify(error));
+
+
+            toast.error(temp.error.message, {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                className: 'foo-bar',
+                theme: "dark"
+            })
+        }
+    }
 
     function handleTokenDecrease() {
         if (tokenCount > 1) {
@@ -125,61 +136,78 @@ const MainPage = () => {
 
             <div className="container main-content">
                 <div className="row align-items-center">
-                    <div className="col-md-8 my-3">
+                    <div className="col-md-8 col-sm-12 my-3">
                         <ScrollableTab />
                         {/* <Stepper /> */}
                     </div>
-                    <div className="col-md-4 my-3">
+                    <div className="col-md-4 col-sm-12 my-3">
 
                         <div className='minting-box'>
+                            {!address ?
+                                "Connect your Metamask wallet (ETH network) to mint BitcoinHoomans."
+                                : ""}
                             <ConnectWallet />
                             {address ?
                                 <>
-                                    <div className=''>
-                                        <div className="d-flex justify-content-center my-3">
-                                            {/* <div className="progress">
+                                    {contractDetails.totalMinted >= 200 ?
+                                        <>
+                                            <div className=''>
+                                                <div className="d-flex justify-content-center my-3">
+                                                    {/* <div className="progress">
                                                 <div className="progress-bar" role="progressbar" aria-label="Example with label" style={{ width: `${progress}%` }} aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100"></div>
                                             </div> */}
-                                        </div>
+                                                </div>
 
-                                        <div className='my-3'>Supply : <span className='orange-text'>{contractDetails.totalMinted ? contractDetails.totalMinted : "XXXX"} / {contractDetails.MAX_SUPPLY ? contractDetails.MAX_SUPPLY : "XXXX"}</span></div>
-                                        <div className='my-3'>price : <span className='orange-text'>{contractDetails.publicPrice ? contractDetails.publicPrice : "XXXX"} ETH</span></div>
-                                    </div>
-                                    {contractDetails.totalMinted === contractDetails.MAX_SUPPLY ?
-                                        <>
-                                            <div>SOLD OUT</div>
-                                            <p>Buy it in Secondary</p>
+                                                <div className='my-3'>Supply : <span className='orange-text'>{contractDetails.totalMinted ? contractDetails.totalMinted : "XXXX"} / {contractDetails.MAX_SUPPLY ? contractDetails.MAX_SUPPLY : "XXXX"}</span></div>
+                                                <div className='my-3'>price : <span className='orange-text'>{contractDetails.publicPrice ? contractDetails.publicPrice : "XXXX"} ETH</span></div>
+                                            </div>
+                                            {contractDetails.totalMinted === contractDetails.MAX_SUPPLY ?
+                                                <>
+                                                    <div>SOLD OUT</div>
+                                                    <p>Buy it in Secondary</p>
+                                                </>
+                                                :
+                                                <>
+                                                    <div>
+                                                        <div className='my-2'>Token Count</div>
+                                                        <div className="token-input-container d-flex justify-content-center align-items-center">
+                                                            <button className="decrease-count dapp_btn" onClick={handleTokenDecrease}>-</button>
+                                                            <div className="token-value dapp_btn mx-2">{tokenCount}</div>
+                                                            <button className="increase-count dapp_btn" onClick={handleTokenIncrease}>+</button>
+                                                        </div>
+                                                        <div className='my-2 cursor-pointer' onClick={() => setTokenCount(contractDetails.PUBLIC_MINT_LIMIT)}>max : {contractDetails.PUBLIC_MINT_LIMIT ? contractDetails.PUBLIC_MINT_LIMIT : "XX"}
+                                                        </div>
+                                                        <div>
+                                                            {tokenCount} {'*'} {contractDetails.publicPrice} : {(tokenCount * contractDetails.publicPrice).toFixed(2)} ETH
+                                                        </div>
+                                                    </div>
+                                                    <div className='text-center d-flex flex-column justify-content-center align-items-center'>
+                                                        <button className='ms-2 my-2 mint-btn' onClick={publicMinting}>Mint</button>
+                                                    </div>
+                                                    <div>
+                                                        MAX PER TXN : {contractDetails.PUBLIC_MINT_LIMIT_TXN}
+                                                    </div>
+                                                    <div>
+                                                        MAX PER WALLET : {contractDetails.PUBLIC_MINT_LIMIT}
+                                                    </div>
+                                                </>
+                                            }
                                         </>
                                         :
                                         <>
-                                        <div>
-                                        <div className='my-2'>Token Count</div>
-                                        <div className="token-input-container d-flex justify-content-center align-items-center">
-                                            <button className="decrease-count dapp_btn" onClick={handleTokenDecrease}>-</button>
-                                            <div className="token-value dapp_btn mx-2">{tokenCount}</div>
-                                            <button className="increase-count dapp_btn" onClick={handleTokenIncrease}>+</button>
-                                        </div>
-                                        <div className='my-2 cursor-pointer' onClick={() => setTokenCount(contractDetails.PUBLIC_MINT_LIMIT)}>max : {contractDetails.PUBLIC_MINT_LIMIT ? contractDetails.PUBLIC_MINT_LIMIT : "XX"}
-                                        </div>
-                                        <div>
-                                            {tokenCount} {'*'} {contractDetails.publicPrice} : {tokenCount * contractDetails.publicPrice} ETH
-                                        </div>
-                                    </div>
-                                    <div className='text-center d-flex flex-column justify-content-center align-items-center'>
-
-                                        {address && (
-                                            <button className='ms-2 my-2 mint-btn' onClick={publicMinting}>Mint</button>
-                                        )
-                                        }
-                                    </div>
-                                    <div>
-                                        MAX PER TXN : {contractDetails.PUBLIC_MINT_LIMIT_TXN}
-                                    </div>
-                                    <div>
-                                        MAX PER WALLET : {contractDetails.PUBLIC_MINT_LIMIT}
-                                    </div>
-                                        </>}
-                                   
+                                            {
+                                                contractDetails.paused ?
+                                                    <div>Mint not started</div>
+                                                    :
+                                                    <>
+                                                        <div className='my-3'>Supply : <span className='orange-text'>{contractDetails.totalMinted ? contractDetails.totalMinted : "XXXX"} / {contractDetails.MAX_SUPPLY ? contractDetails.MAX_SUPPLY : "XXXX"}</span></div>
+                                                    </>
+                                            }
+                                            <div className='text-center d-flex flex-column justify-content-center align-items-center'>
+                                                <button className='ms-2 my-2 mint-btn' onClick={freeMinting}>Free Mint</button>
+                                            </div>
+                                        </>
+                                    }
                                 </>
                                 : ""}
 
